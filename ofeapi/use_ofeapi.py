@@ -2,8 +2,10 @@ import os
 import json
 import argparse
 import shutil
-from ofe import ofe
+import ofeapi
 
+DOWNLOAD_FOLDER = "/tmp/ofe"
+    
 def main():
     parser = argparse.ArgumentParser()
 
@@ -67,34 +69,33 @@ def main():
     logy = args.logy
     function = args.function
 
-    ofe.set_PARAMS("function",function)
+    ofeapi.set_PARAMS("function",function)
 
     if file_path.endswith(".hdf5"):
-        ofe.set_PARAMS("stelar-hdf5","yes")
+        ofeapi.set_PARAMS("stelar-hdf5","yes")
 
     if autox:
-        ofe.set_PARAMS("autox","yes")
+        ofeapi.set_PARAMS("autox","yes")
 
     if autoy:
-        ofe.set_PARAMS("autoy","yes")
+        ofeapi.set_PARAMS("autoy","yes")
         
     if logx:
         ofe.set_PARAMS("logx","yes")
 
     if logy:
-        ofe.set_PARAMS("logy","yes")
+        ofeapi.set_PARAMS("logy","yes")
 
-    print(ofe.PARAMS)
+    print(ofeapi.PARAMS)
 
-    DOWNLOAD_FOLDER = "/tmp/ofe"
-    
-    json_file = ofe.fit(file_path,DOWNLOAD_FOLDER)
+    json_file = ofeapi.fit(file_path,DOWNLOAD_FOLDER)
+    folder = json_file.get("tmp_folder")
 
     if force_clean:
-        shutil.rmtree(json_file.get("tmp_folder"))
-        print(f"Folder {json_file.get("tmp_folder")} removed.")
+        shutil.rmtree(folder)
+        print(f"Folder {folder} removed.")
     else:
-        print(f"Folder {json_file.get("tmp_folder")} not removed.")
+        print(f"Folder {folder} not removed.")
 
 
 if __name__ == "__main__":
