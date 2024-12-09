@@ -7,9 +7,10 @@ import argparse
 import shutil
 from io import BytesIO
 
-URL = "http://192.168.64.25:8142/fit"  # Replace with the real URL
+URL = "http://onefite-t.vps.tecnico.ulisboa.pt:8142/fit"  # Replace with the real URL
 FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c=1[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
 PARAMS = {"download": "zip"}
+DOWNLOAD_FOLDER = "."
 
 def set_url(url):
     global URL
@@ -23,12 +24,16 @@ def set_PARAMS(key,value):
     global PARAMS
     PARAMS[key]=value
 
-def query(url, file_path, params, download_folder):
+def set_DOWNLOAD_FOLDER(value):
+    global DOWNLOAD_FOLDER
+    DOWNLOAD_FOLDER = value
+    
+def fit(file_path):
     try:
 #        print(f"Uploading file and {params}...to {url}")
         with open(file_path, "rb") as file:
             files = {'file': file}  
-            query = requests.post(url, files=files, data=params)
+            query = requests.post(URL, files=files, data=PARAMS)
         
 
         if query.status_code != 200:
@@ -40,16 +45,16 @@ def query(url, file_path, params, download_folder):
         if "application/zip" not in content_type and "application/octet-stream" not in content_type:
             raise Exception(f"The query to {URL} does not contain a ZIP file.")
         
-        os.makedirs(download_folder, exist_ok=True)  
+        os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)  
 
         with zipfile.ZipFile(BytesIO(query.content)) as zip_file:
             zip_path = zip_file.namelist();
  #           print(f"Extracting ZIP file to '{download_folder}'...")
-            zip_file.extractall(download_folder)
+            zip_file.extractall(DOWNLOAD_FOLDER)
 
         json_content = None
 #        print (f"{download_folder}/{zip_path[0]}")
-        for root, _, files in os.walk(f"{download_folder}/{zip_path[0]}"):
+        for root, _, files in os.walk(f"{DOWNLOAD_FOLDER}/{zip_path[0]}"):
             for file in files:
                 if file.endswith(".json"):
                     json_file_path = os.path.join(root, file)
@@ -60,33 +65,115 @@ def query(url, file_path, params, download_folder):
 
         tmp_folder = f"{zip_path[0]}"
         parts = tmp_folder.split("/")
-        json_content["tmp_folder"]= f"{download_folder}/{parts[0]}"
+        json_content["tmp_folder"]= f"{DOWNLOAD_FOLDER}/{parts[0]}"
         if json_content is None:
             raise Exception("No JSON file found in the extracted ZIP archive.")
         else:
-#           print("Decoded onefite JSON file successfully.")
+            fit_results = json_content.get("fit-results")
+            if fit_results is not None:
+                print(fit_results)
+            else:
+                print("\nKey 'fit-results' not found in the JSON file.")
+
             return json_content
-
-
 
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
 
+def use():
+    parser = argparse.ArgumentParser()
 
+    # Add arguments or options
+    parser.add_argument(
+        "--clean", 
+        action="store_true",
+        default=False,
+        help="Remove dowload folder"
+    )
 
-def fit(file_path,DOWNLOAD_FOLDER):
-    json_file = query(URL, file_path, PARAMS, DOWNLOAD_FOLDER)
+    parser.add_argument(
+        "input_file", 
+        type=str, 
+        help="Input file"
+    )
+
+    parser.add_argument(
+        "--function", 
+        type=str,
+#        default=FUNCTION,
+        help="Fitting function"
+    )
+
+    parser.add_argument(
+        "--autox", 
+        action="store_true",
+        default=False,
+        help="autox"
+    )
+    parser.add_argument(
+        "--autoy", 
+        action="store_true",
+        default=False,
+        help="autoy"
+    )
+
+    parser.add_argument(
+        "--logx", 
+        action="store_true",
+        default=False,
+        help="logx"
+    )
+
+    parser.add_argument(
+        "--logy", 
+        action="store_true",
+        default=False,
+        help="logy"
+    )
+
+    parser.add_argument(
+        "--download_folder", 
+        type=str,
+        default=".",
+        help="dowload folder"
+    )
+    print(FUNCTION)
+    # Parse the arguments
+    args = parser.parse_args()
+
+    set_PARAMS("function",args.function)
+
+    set_DOWNLOAD_FOLDER(args.download_folder)
     
-    if json_file:
-        fit_results = json_file.get("fit-results")
-        if fit_results is not None:
-            print(fit_results)
-        else:
-            print("\nKey 'fit-results' not found in the JSON file.")
+    if args.input_file.endswith(".hdf5"):
+        set_PARAMS("stelar-hdf5","yes")
+
+    if args.autox:
+        set_PARAMS("autox","yes")
+
+    if args.autoy:
+        set_PARAMS("autoy","yes")
+        
+    if args.logx:
+        set_PARAMS("logx","yes")
+
+    if args.logy:
+        set_PARAMS("logy","yes")
+
+    print(PARAMS)
+
+    json_file = fit(args.input_file)
+    folder = json_file.get("tmp_folder")
+
+    if args.clean:
+        shutil.rmtree(folder)
+        print(f"Folder {folder} removed.")
     else:
-        print("Failed to process the request.")
+        print(f"Folder {folder} not removed.")
 
 
-    return json_file
+if __name__ == "__main__":
+    use()
 
+    

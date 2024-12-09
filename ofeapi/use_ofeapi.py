@@ -2,10 +2,8 @@ import os
 import json
 import argparse
 import shutil
-import ofeapi
+from ofeapi import *
 
-DOWNLOAD_FOLDER = "/tmp/ofe"
-    
 def main():
     parser = argparse.ArgumentParser()
 
@@ -26,7 +24,7 @@ def main():
     parser.add_argument(
         "--function", 
         type=str,
-        default= ofe.FUNCTION,
+#        default=ofeapi.FUNCTION,
         help="Fitting function"
     )
 
@@ -56,42 +54,42 @@ def main():
         default=False,
         help="logy"
     )
-    
+
+    parser.add_argument(
+        "--download_folder", 
+        type=str,
+        default=".",
+        help="dowload folder"
+    )
+    print(ofeapi.FUNCTION)
     # Parse the arguments
     args = parser.parse_args()
 
-    # Use the arguments in your script
-    file_path = args.input_file
-    force_clean = args.clean
-    autox = args.autox
-    autoy = args.autoy
-    logx = args.logx
-    logy = args.logy
-    function = args.function
+    ofeapi.set_PARAMS("function",args.function)
 
-    ofeapi.set_PARAMS("function",function)
-
-    if file_path.endswith(".hdf5"):
+    ofeapi.set_DOWNLOAD_FOLDER(args.download_folder)
+    
+    if args.input_file.endswith(".hdf5"):
         ofeapi.set_PARAMS("stelar-hdf5","yes")
 
-    if autox:
+    if args.autox:
         ofeapi.set_PARAMS("autox","yes")
 
-    if autoy:
+    if args.autoy:
         ofeapi.set_PARAMS("autoy","yes")
         
-    if logx:
+    if args.logx:
         ofe.set_PARAMS("logx","yes")
 
-    if logy:
+    if args.logy:
         ofeapi.set_PARAMS("logy","yes")
 
     print(ofeapi.PARAMS)
 
-    json_file = ofeapi.fit(file_path,DOWNLOAD_FOLDER)
+    json_file = ofeapi.fit(args.input_file)
     folder = json_file.get("tmp_folder")
 
-    if force_clean:
+    if args.clean:
         shutil.rmtree(folder)
         print(f"Folder {folder} removed.")
     else:
