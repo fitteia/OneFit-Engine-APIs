@@ -21,6 +21,6 @@ python3 ofe/main.py
 Help:
 
 python3
->>> import ofe
->>> help(ofe)
->>> exit
+\>\>\> import ofe
+\>\>\> help(ofe)
+\>\>\> exit

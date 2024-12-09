@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ofe",
+    name="ofeapi",
     version="0.02.03",
-    description="A Python module to use OFE.",
+    description="A Pyhton module API to use OFE.",
     packages=find_packages(),  
     install_requires=["requests"],
 )
