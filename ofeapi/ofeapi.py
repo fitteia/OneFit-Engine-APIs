@@ -28,7 +28,8 @@ def set_DOWNLOAD_FOLDER(value):
     global DOWNLOAD_FOLDER
     DOWNLOAD_FOLDER = value
     
-def fit(file_path):
+def fit(*args):
+    file_path = args[0];
     try:
 #        print(f"Uploading file and {params}...to {url}")
         with open(file_path, "rb") as file:
@@ -71,7 +72,8 @@ def fit(file_path):
         else:
             fit_results = json_content.get("fit-results")
             if fit_results is not None:
-                print(fit_results)
+                if len(args)>1:
+                    print(fit_results)
             else:
                 print("\nKey 'fit-results' not found in the JSON file.")
 
@@ -163,7 +165,7 @@ def use():
 
     print(PARAMS)
 
-    json_file = fit(args.input_file)
+    json_file = fit(args.input_file,"-v")
     folder = json_file.get("tmp_folder")
 
     if args.clean:
