@@ -4,6 +4,8 @@ import argparse
 import shutil
 import ofe
 
+DOWNLOAD_FOLDER = "/tmp/ofe"
+    
 def main():
     parser = argparse.ArgumentParser()
 
@@ -86,8 +88,6 @@ def main():
 
     print(ofe.PARAMS)
 
-    DOWNLOAD_FOLDER = "/tmp/ofe"
-    
     json_file = ofe.fit(file_path,DOWNLOAD_FOLDER)
     folder = json_file.get("tmp_folder")
 
