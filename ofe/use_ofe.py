@@ -2,7 +2,7 @@ import os
 import json
 import argparse
 import shutil
-from ofe import ofe
+import ofe
 
 def main():
     parser = argparse.ArgumentParser()
@@ -89,12 +89,13 @@ def main():
     DOWNLOAD_FOLDER = "/tmp/ofe"
     
     json_file = ofe.fit(file_path,DOWNLOAD_FOLDER)
+    folder = json_file.get("tmp_folder")
 
     if force_clean:
-        shutil.rmtree(json_file.get("tmp_folder"))
-        print(f"Folder {json_file.get("tmp_folder")} removed.")
+        shutil.rmtree(folder)
+        print(f"Folder {folder} removed.")
     else:
-        print(f"Folder {json_file.get("tmp_folder")} not removed.")
+        print(f"Folder {folder} not removed.")
 
 
 if __name__ == "__main__":
