@@ -138,7 +138,7 @@ def use():
         default=".",
         help="dowload folder"
     )
-    print(FUNCTION)
+
     # Parse the arguments
     args = parser.parse_args()
 
