@@ -18,7 +18,8 @@ python3 -m pip install --upgrade .
 
 propmt> python3 ofeapi/main.py
 
-propmpt
+prompt> python3 ofeapi/ofeapi.py
+
 ## Help:
 
 python3 \
