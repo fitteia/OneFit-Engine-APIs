@@ -11,7 +11,8 @@ if __name__ == "__main__":
                      'autox': 'yes',
                      'logx': 'yes'
                      }
-    print(ofeapi.PARAMS)
+
+    print(f"\nUploading {sys.argv[1]}  and PARAMS: {ofeapi.PARAMS} to OneFit-Engine server {ofeapi.URL}\n")
     json_file = ofeapi.fit(sys.argv[1])
     print(json.dumps(json_file,indent=4))
     print(json_file.get("fit-results"))

@@ -8,7 +8,7 @@ import shutil
 from io import BytesIO
 
 URL = "http://onefite-t.vps.tecnico.ulisboa.pt:8142/fit"  # Replace with the real URL
-FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c=1[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
+FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
 PARAMS = {"download": "zip"}
 DOWNLOAD_FOLDER = "."
 
@@ -32,7 +32,7 @@ def fit(*args):
     file_path = args[0];
     try:
         if len(args)>1 and args[1]  == "-v":
-            print(f"Uploading file and {PARAMS}...to {URL}")
+            print(f"Uploading {file_path} and PARAMS = {PARAMS} to OneFit-Engine server: {URL}")
             
         with open(file_path, "rb") as file:
             files = {'file': file}  
@@ -60,7 +60,7 @@ def fit(*args):
 
         json_content = None
         if len(args)>1 and args[1]  == "-v":
-            print (f"{DOWNLOAD_FOLDER}/{zip_path[0]}")
+            print (f"Download folder: {DOWNLOAD_FOLDER}/{zip_path[0]}")
 
         for root, _, files in os.walk(f"{DOWNLOAD_FOLDER}/{zip_path[0]}"):
             for file in files:
@@ -157,12 +157,14 @@ def use():
         help="verbose"
     )
 
-    # Parse the arguments
+    # Parse the arguments and set PARAMS
     args = parser.parse_args()
 
-    set_PARAMS("function",args.function)
+    if args.function:
+        set_PARAMS("function",args.function)
 
-    set_DOWNLOAD_FOLDER(args.download_folder)
+    if args.download_folder:
+        set_DOWNLOAD_FOLDER(args.download_folder)
     
     if args.input_file.endswith(".hdf5"):
         set_PARAMS("stelar-hdf5","yes")
@@ -179,12 +181,22 @@ def use():
     if args.logy:
         set_PARAMS("logy","yes")
 
-    print(PARAMS)
     if args.verbose:
         verbose = "-v"
     else:
         verbose = ""
+
         
+#### As an alternative  a static setting is possible
+#
+#    PARAMS = {'download': 'zip',
+#              'function': rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)",
+#              'autox': 'yes',
+#              'logx': 'yes'
+#              }
+####
+        
+
     json_file = fit(args.input_file,verbose)
 
     print(json_file.get("fit-results"))
