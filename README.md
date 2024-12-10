@@ -8,7 +8,7 @@ python3 -m venv ~/.venv
 source ~/.venv/bin/activate
 python3 -m pip install .
 
-(Windows PowerShell run: ~/.venv/bin/Activate.ps1)
+Windows PowerShell: python3 -m pip install .
 
 ## upgrades:
 
@@ -16,11 +16,12 @@ python3 -m pip install --upgrade .
 
 ## Usage:
 
-python3 ofe/main.py
+propmt> python3 ofeapi/main.py
 
+propmpt
 ## Help:
 
 python3
-\>\>\> import ofe
-\>\>\> help(ofe)
+\>\>\> import ofeapi
+\>\>\> help(ofeapi)
 \>\>\> exit
