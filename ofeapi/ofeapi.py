@@ -31,7 +31,9 @@ def set_DOWNLOAD_FOLDER(value):
 def fit(*args):
     file_path = args[0];
     try:
-#        print(f"Uploading file and {params}...to {url}")
+        if len(args)>1 and args[1]  == "-v":
+            print(f"Uploading file and {PARAMS}...to {URL}")
+            
         with open(file_path, "rb") as file:
             files = {'file': file}  
             query = requests.post(URL, files=files, data=PARAMS)
@@ -40,7 +42,8 @@ def fit(*args):
         if query.status_code != 200:
             raise Exception(f"File upload failed: {query.status_code}, {query.text}")
 
-#        print("File uploaded successfully. Downloading the onefite ZIP file...")
+        if len(args)>1 and args[1]  == "-v":
+            print("File uploaded successfully. Downloading the onefite ZIP file...")
 
         content_type = query.headers.get('Content-Type', '')
         if "application/zip" not in content_type and "application/octet-stream" not in content_type:
@@ -49,17 +52,23 @@ def fit(*args):
         os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)  
 
         with zipfile.ZipFile(BytesIO(query.content)) as zip_file:
+            if len(args)>1 and args[1]  == "-v":
+                print(f"Extracting ZIP file to '{DOWNLOAD_FOLDER}'...")
+
             zip_path = zip_file.namelist();
- #           print(f"Extracting ZIP file to '{download_folder}'...")
             zip_file.extractall(DOWNLOAD_FOLDER)
 
         json_content = None
-#        print (f"{download_folder}/{zip_path[0]}")
+        if len(args)>1 and args[1]  == "-v":
+            print (f"{DOWNLOAD_FOLDER}/{zip_path[0]}")
+
         for root, _, files in os.walk(f"{DOWNLOAD_FOLDER}/{zip_path[0]}"):
             for file in files:
                 if file.endswith(".json"):
                     json_file_path = os.path.join(root, file)
-#                   print(f"Found JSON file: {json_file_path}")
+                    if len(args)>1 and args[1]  == "-v":
+                        print(f"Found JSON file: {json_file_path}")
+
                     with open(json_file_path, "r", encoding="utf-8") as json_file:
                         json_content = json.load(json_file)  # Decode JSON
                     break  # Exit after finding the first JSON file
@@ -71,11 +80,11 @@ def fit(*args):
             raise Exception("No JSON file found in the extracted ZIP archive.")
         else:
             fit_results = json_content.get("fit-results")
-            if fit_results is not None:
-                if len(args)>1:
-                    print(fit_results)
-            else:
-                print("\nKey 'fit-results' not found in the JSON file.")
+#            if fit_results is not None:
+#                if len(args)>1:
+#                    print(fit_results)
+#            else:
+#                print("\nKey 'fit-results' not found in the JSON file.")
 
             return json_content
 
@@ -101,9 +110,16 @@ def use():
     )
 
     parser.add_argument(
+        "--download_folder", 
+        type=str,
+        default=".",
+        help="Download_folder"
+    )
+
+    parser.add_argument(
         "--function", 
         type=str,
-#        default=FUNCTION,
+        default=FUNCTION,
         help="Fitting function"
     )
 
@@ -135,10 +151,10 @@ def use():
     )
 
     parser.add_argument(
-        "--download_folder", 
-        type=str,
-        default=".",
-        help="dowload folder"
+        "--verbose", 
+        action="store_true",
+        default=False,
+        help="verbose"
     )
 
     # Parse the arguments
@@ -164,10 +180,17 @@ def use():
         set_PARAMS("logy","yes")
 
     print(PARAMS)
+    if args.verbose:
+        verbose = "-v"
+    else:
+        verbose = ""
+        
+    json_file = fit(args.input_file,verbose)
 
-    json_file = fit(args.input_file,"-v")
+    print(json_file.get("fit-results"))
+
     folder = json_file.get("tmp_folder")
-
+    
     if args.clean:
         shutil.rmtree(folder)
         print(f"Folder {folder} removed.")

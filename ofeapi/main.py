@@ -14,4 +14,5 @@ if __name__ == "__main__":
     print(ofeapi.PARAMS)
     json_file = ofeapi.fit(sys.argv[1])
     print(json.dumps(json_file,indent=4))
+    print(json_file.get("fit-results"))
 
