@@ -16,6 +16,4 @@ if __name__ == "__main__":
     print(json.dumps(json_file,indent=4))
     print(json_file.get("fit-results"))
 
-    
 
-    
