@@ -21,7 +21,7 @@ propmt> python3 ofeapi/main.py
 propmpt
 ## Help:
 
-python3
-\>\>\> import ofeapi
-\>\>\> help(ofeapi)
+python3 \
+\>\>\> import ofeapi \
+\>\>\> help(ofeapi) \
 \>\>\> exit
