@@ -92,7 +92,7 @@ def fit(*args):
         print(f"An error occurred: {e}")
         return None
 
-def use():
+def shcmd():
     parser = argparse.ArgumentParser()
 
     # Add arguments or options
@@ -211,6 +211,6 @@ def use():
 
 
 if __name__ == "__main__":
-    use()
+    shcmd()
 
     
