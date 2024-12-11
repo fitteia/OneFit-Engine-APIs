@@ -12,7 +12,7 @@ FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T
 PARAMS = {"download": "zip"}
 DOWNLOAD_FOLDER = "."
 
-def set_url(url):
+def set_URL(url):
     global URL
     URL = url
 
@@ -149,7 +149,12 @@ def shcmd():
         default=False,
         help="logy"
     )
-
+    parser.add_argument(
+        "--url", 
+        type=str,
+        default=URL,
+        help="OneFit-Engine URL"
+    )
     parser.add_argument(
         "--verbose", 
         action="store_true",
@@ -180,6 +185,9 @@ def shcmd():
 
     if args.logy:
         set_PARAMS("logy","yes")
+
+    if args.url:
+        set_URL(args.url)
 
     if args.verbose:
         verbose = "-v"
