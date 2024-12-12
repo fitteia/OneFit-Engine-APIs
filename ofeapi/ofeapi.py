@@ -13,20 +13,31 @@ PARAMS = {"download": "zip"}
 DOWNLOAD_FOLDER = "."
 
 def set_URL(url):
-    global URL
     URL = url
 
+def get_URL():
+    return URL
+
 def set_FUNCTION(function):
-    global FUNCTION
     FUNCTION = function
 
-def set_PARAMS(key,value):
-    global PARAMS
+def set_PARAM(key,value):
     PARAMS[key]=value
 
+def get_PARAM(key):
+    return PARAMS[key]
+
+def set_PARAMS(params):
+    PARAMS=params
+
+def get_PARAMS():
+    return PARAMS
+
 def set_DOWNLOAD_FOLDER(value):
-    global DOWNLOAD_FOLDER
     DOWNLOAD_FOLDER = value
+
+def get_DOWNLOAD_FOLDER():
+    return DOWNLOAD_FOLDER
     
 def fit(*args):
     file_path = args[0];
@@ -166,25 +177,25 @@ def shcmd():
     args = parser.parse_args()
 
     if args.function:
-        set_PARAMS("function",args.function)
+        set_PARAM("function",args.function)
 
     if args.download_folder:
         set_DOWNLOAD_FOLDER(args.download_folder)
     
     if args.input_file.endswith(".hdf5"):
-        set_PARAMS("stelar-hdf5","yes")
+        set_PARAM("stelar-hdf5","yes")
 
     if args.autox:
-        set_PARAMS("autox","yes")
+        set_PARAM("autox","yes")
 
     if args.autoy:
-        set_PARAMS("autoy","yes")
+        set_PARAM("autoy","yes")
         
     if args.logx:
-        set_PARAMS("logx","yes")
+        set_PARAM("logx","yes")
 
     if args.logy:
-        set_PARAMS("logy","yes")
+        set_PARAM("logy","yes")
 
     if args.url:
         set_URL(args.url)
