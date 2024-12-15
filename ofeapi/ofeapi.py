@@ -13,32 +13,25 @@ PARAMS = {"download": "zip"}
 DOWNLOAD_FOLDER = "."
 
 def set_URL(url):
+    global URL
     URL = url
 
-def get_URL():
-    return URL
-
 def set_FUNCTION(function):
+    global FUNCTION
     FUNCTION = function
 
 def set_PARAM(key,value):
+    global PARAMS
     PARAMS[key]=value
 
-def get_PARAM(key):
-    return PARAMS[key]
-
 def set_PARAMS(params):
+    global PARAMS
     PARAMS=params
 
-def get_PARAMS():
-    return PARAMS
-
 def set_DOWNLOAD_FOLDER(value):
+    global DOWNLOAD_FOLDER
     DOWNLOAD_FOLDER = value
 
-def get_DOWNLOAD_FOLDER():
-    return DOWNLOAD_FOLDER
-    
 def fit(*args):
     file_path = args[0];
     try:
@@ -198,8 +191,10 @@ def shcmd():
         set_PARAM("logy","yes")
 
     if args.url:
-        set_URL(args.url)
-
+        url=args.url
+        set_URL(url)
+        print(URL)
+        
     if args.verbose:
         verbose = "-v"
     else:

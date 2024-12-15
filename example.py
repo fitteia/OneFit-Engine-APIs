@@ -9,6 +9,7 @@ if __name__ == "__main__":
     ofeapi.set_PARAMS(
         {'download': 'zip',
          'function': rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)",
+         'stelar-hdf5': 'yes',
          'autox': 'yes',
          'logx': 'yes'
          }
