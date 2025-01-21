@@ -8,6 +8,7 @@ import sys
 import argparse
 import shutil
 from io import BytesIO
+from pathlib import Path
 
 #URL = "http://onefite-t.vps.tecnico.ulisboa.pt:8142/fit"  # Replace with the real URL
 URL = "http://192.92.147.107:8142/fit"  # Replace with the real URL
@@ -219,6 +220,9 @@ def shcmd():
 
     json_file = fit(args.input_file,verbose)
 
+    with open( Path(args.input_file).with_suffix(".json"),"w") as file:
+        json.dump(json_file,file,indent=4)
+    
     print(json_file.get("fit-results"))
 
     folder = json_file.get("tmp_folder")
