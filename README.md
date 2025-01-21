@@ -2,6 +2,9 @@
 
 This is a Python module to create command line interfaces to the OneFit-Engine server.
 
+Prints on screen the fit results
+Saves he onefite json file
+
 ## Install:
 
 python3 -m venv ~/.venv \
