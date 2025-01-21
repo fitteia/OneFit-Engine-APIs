@@ -16,9 +16,17 @@ python3 -m pip install --upgrade .
 
 ## Usage:
 
-propmt> python3 ofeapi/main.py
+propmt> python3 example.py
 
 prompt> python3 ofeapi/ofeapi.py
+
+or:
+
+prompt> chmod +x example.py ofeapi/ofeapi.py
+
+prompt> ./example.py
+
+prompt> ./ofeapi/ofeapi.py
 
 ## Help:
 
