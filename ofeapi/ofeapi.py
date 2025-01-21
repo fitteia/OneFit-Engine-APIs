@@ -197,7 +197,7 @@ def shcmd():
     if args.url:
         url=args.url
         set_URL(url)
-        print(URL)
+#        print(URL)
         
     if args.verbose:
         verbose = "-v"
