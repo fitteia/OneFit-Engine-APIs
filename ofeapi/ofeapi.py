@@ -179,6 +179,9 @@ def shcmd():
     if args.input_file.endswith(".hdf5"):
         set_PARAM("stelar-hdf5","yes")
 
+    if args.input_file.endswith(".json"):
+        set_PARAM("function","")
+
     if args.autox:
         set_PARAM("autox","yes")
 
