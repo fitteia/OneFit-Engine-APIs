@@ -2,8 +2,8 @@
 
 This is a Python module to create command line interfaces to the OneFit-Engine server.
 
-Prints on screen the fit results
-Saves he onefite json file
+Prints on screen the fit results\
+Saves the OFE json file
 
 ## Install:
 
