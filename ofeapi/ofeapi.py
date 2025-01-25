@@ -208,7 +208,7 @@ def shcmd():
         set_PARAM("logy","yes")
 
     if args.symbsize:
-        set_PARAMS("symbsize",args.symbsize)
+        set_PARAM("symbsize",args.symbsize)
         
     if args.url:
         url=args.url
