@@ -208,6 +208,7 @@ def shcmd():
         set_PARAM("logy","yes")
 
     if args.symbsize:
+        print(args.symbsize)
         set_PARAM("symbsize",args.symbsize)
         print(PARAMS)
         
