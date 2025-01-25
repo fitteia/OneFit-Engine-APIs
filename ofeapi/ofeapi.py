@@ -13,7 +13,10 @@ from pathlib import Path
 #URL = "http://onefite-t.vps.tecnico.ulisboa.pt:8142/fit"  # Replace with the real URL
 URL = "http://192.92.147.107:8142/fit"  # Replace with the real URL
 FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
-PARAMS = {"download": "zip"}
+PARAMS = {
+    "download": "zip",
+    "SymbSize": "1.0"
+}
 DOWNLOAD_FOLDER = "."
 
 def set_URL(url):
@@ -118,6 +121,13 @@ def shcmd():
     )
 
     parser.add_argument(
+        "--symbsize", 
+        type=float,
+        default=1.0,
+        help="Symbol size"
+    )
+
+    parser.add_argument(
         "--download_folder", 
         type=str,
         default=".",
@@ -197,11 +207,15 @@ def shcmd():
     if args.logy:
         set_PARAM("logy","yes")
 
+    if args.symbsize:
+        set_PARAMS("symbsize",args.symbsize)
+        
     if args.url:
         url=args.url
         set_URL(url)
 #        print(URL)
-        
+
+
     if args.verbose:
         verbose = "-v"
     else:
