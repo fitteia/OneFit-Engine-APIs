@@ -209,6 +209,7 @@ def shcmd():
 
     if args.symbsize:
         set_PARAM("symbsize",args.symbsize)
+        print(PARAMS)
         
     if args.url:
         url=args.url
