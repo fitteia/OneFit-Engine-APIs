@@ -15,7 +15,7 @@ URL = "http://192.92.147.107:8142/fit"  # Replace with the real URL
 FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
 PARAMS = {
     "download": "zip",
-    "SymbSize": "1.0"
+    "SymbSize": 1.0
 }
 DOWNLOAD_FOLDER = "."
 
