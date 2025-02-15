@@ -15,7 +15,6 @@ URL = "http://192.92.147.107:8142/fit"  # Replace with the real URL
 FUNCTION = rf"Mz[-1.5<1.5](t,a,b,c[0.5<1],T11[0<4],T12[0<4]) = a \+ b*c*exp(-t/T11) \+ b*(1-c)*exp(-t/T12)"
 PARAMS = {
     "download": "zip",
-    "SymbSize": 1.0
 }
 DOWNLOAD_FOLDER = "."
 
@@ -41,6 +40,7 @@ def set_DOWNLOAD_FOLDER(value):
 
 def fit(*args):
     file_path = args[0];
+#    print(PARAMS,file_path, URL)
     try:
         if len(args)>1 and args[1]  == "-v":
             print(f"Uploading {file_path} and PARAMS = {PARAMS} to OneFit-Engine server: {URL}")
@@ -123,7 +123,6 @@ def shcmd():
     parser.add_argument(
         "--symbsize", 
         type=float,
-        default=1.0,
         help="Symbol size"
     )
 
@@ -193,7 +192,10 @@ def shcmd():
         set_PARAM("stelar-hdf5","yes")
 
     if args.input_file.endswith(".json"):
-        set_PARAM("function","")
+        del PARAMS["function"]
+
+    if args.input_file.endswith(".sav"):
+        del PARAMS["function"]
 
     if args.autox:
         set_PARAM("autox","yes")
@@ -209,6 +211,7 @@ def shcmd():
 
     if args.symbsize:
         set_PARAM("SymbSize",args.symbsize)
+        print("ola")
         
     if args.url:
         url=args.url
@@ -230,8 +233,9 @@ def shcmd():
 #              'logx': 'yes'
 #              }
 ####
-        
 
+
+        
     json_file = fit(args.input_file,verbose)
 
     with open( Path(args.input_file).with_suffix(".json"),"w") as file:
@@ -240,7 +244,7 @@ def shcmd():
     print(json_file.get("fit-results"))
 
     folder = json_file.get("tmp_folder")
-    
+
     if args.clean:
         shutil.rmtree(folder)
         print(f"Folder {folder} removed.")
