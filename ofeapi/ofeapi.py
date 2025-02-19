@@ -169,7 +169,7 @@ def shcmd():
     parser.add_argument(
         "--url", 
         type=str,
-        default=URL,
+#        default=URL,
         help="OneFit-Engine URL"
     )
     parser.add_argument(
@@ -211,13 +211,29 @@ def shcmd():
 
     if args.symbsize:
         set_PARAM("SymbSize",args.symbsize)
-        print("ola")
         
     if args.url:
         url=args.url
         set_URL(url)
+        with open('ofeapi.etc', 'w') as file:
+            file.write(url)
+        
+        print(f"set default server in ./ofeapi.etc {URL}")
 #        print(URL)
 
+    if os.path.isfile('ofeapi.etc'):
+        with open('ofeapi.etc', 'r') as file:
+            url=file.read()
+
+        set_URL(url)
+    else:
+        with open('ofeapi.etc', 'w') as file:
+            file.write(URL)
+
+        print(f"set default server in ./ofeapi.etc: {URL}")
+
+#    print(f"ofeapi exists {url}")
+    print(f"using {URL} server set in ./ofeapi.etc")
 
     if args.verbose:
         verbose = "-v"
