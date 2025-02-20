@@ -167,12 +167,13 @@ def shcmd():
         help="logy"
     )
     
-parser.add_argument(
+    parser.add_argument(
         "--global", 
         action="store_true",
         default=False,
         help="global fit"
     )
+
     parser.add_argument(
         "--url", 
         type=str,
