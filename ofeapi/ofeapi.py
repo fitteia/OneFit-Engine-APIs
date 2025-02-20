@@ -168,7 +168,7 @@ def shcmd():
     )
     
     parser.add_argument(
-        "--global", 
+        "--globalfit", 
         action="store_true",
         default=False,
         help="global fit"
@@ -217,7 +217,7 @@ def shcmd():
     if args.logy:
         set_PARAM("logy","yes")
 
-    if args.symbsize:
+    if args.globalfit:
         set_PARAM("global","yes")
 
     if args.logy:
