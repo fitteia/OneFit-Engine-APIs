@@ -166,6 +166,13 @@ def shcmd():
         default=False,
         help="logy"
     )
+    
+parser.add_argument(
+        "--global", 
+        action="store_true",
+        default=False,
+        help="global fit"
+    )
     parser.add_argument(
         "--url", 
         type=str,
@@ -210,6 +217,9 @@ def shcmd():
         set_PARAM("logy","yes")
 
     if args.symbsize:
+        set_PARAM("global","yes")
+
+    if args.logy:
         set_PARAM("SymbSize",args.symbsize)
         
     if args.url:
