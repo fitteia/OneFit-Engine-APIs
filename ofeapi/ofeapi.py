@@ -187,6 +187,14 @@ def shcmd():
         help="verbose"
     )
 
+    parser.add_argument(
+        "--json", 
+        action="store_true",
+        default=False,
+        help="json"
+    )
+
+    # Parse the arguments and set PARAMS
     # Parse the arguments and set PARAMS
     args = parser.parse_args()
 
@@ -267,8 +275,12 @@ def shcmd():
 
     with open( Path(args.input_file).with_suffix(".json"),"w") as file:
         json.dump(json_file,file,indent=4)
-    
-    print(json_file.get("fit-results"))
+   
+    if args.json:
+        print(json_file)
+
+    else:
+        print(json_file.get("fit-results"))
 
     folder = json_file.get("tmp_folder")
 
