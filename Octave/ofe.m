@@ -3,7 +3,7 @@ function [data] = ofe(datafile,varargin)
   external_program = 'curl';
 
   arguments = [' -F "file=@', datafile, '" '];
-  arguments = [ arguments, ' http://192.168.64.40:8142/fit/ofe -s -F "download=json" '];
+  arguments = [ arguments, ' http://192.92.147.107:8142/fit --silent -F "download=json" '];
 
   if length(varargin)>0
     for i=1:length(varargin)
