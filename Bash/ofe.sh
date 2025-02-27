@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env sh
 
 fit () { 
 	if [ -n "$3" ]; then 
