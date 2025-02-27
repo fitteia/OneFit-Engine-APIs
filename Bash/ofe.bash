@@ -1,15 +1,26 @@
-#!/usr/bin/env bash
+!/usr/bin/env bash
 
 fit () { 
-	curl -F"file=@$1" -F "function=$2" "logx=no" -F "autox=yes" -F "autoy=yes" http://192.92.147.107:8142/fit
+	if [ -n "$3" ]; then 
+		curl -F "file=@$1" -F "function=$2" -F "logx=no" -F "autox=yes" -F "autoy=yes"  -F "download=$3" http://192.92.147.107:8142/fit
+	else
+		curl -F "file=@$1" -F "function=$2" -F "logx=no" -F "autox=yes" -F "autoy=yes"  http://192.92.147.107:8142/fit
+	fi
 }
-
 fit-logx () { 
-	curl -F"file=@$1" -F "function=$2" -F "logx=yes" -F "autox=yes" -F "autoy=yes" http://192.92.147.107:8142/fit
+	if [ -n "$3" ]; then 
+		curl -F "file=@$1" -F "function=$2" -F "logx=yes" -F "autox=yes" -F "autoy=yes"  -F "download=$3" http://192.92.147.107:8142/fit
+	else
+		curl -F "file=@$1" -F "function=$2" -F "logx=yes" -F "autox=yes" -F "autoy=yes"  http://192.92.147.107:8142/fit
+	fi
 }
-
+ 
 fit-exp-logx () { 
-	curl -F"file=@$1" -F "function=a: one exponential" -F "logx=yes" -F "autox=yes" -F "autoy=yes" http://192.92.147.107:8142/fit 
+	if [ -n "$2" ]; then 
+		curl -F "file=@$1" -F "function=a: one exponential" -F "logx=yes" -F "autox=yes" -F "autoy=yes"  -F "download=$2" http://192.92.147.107:8142/fit 
+	else 
+		curl -F "file=@$1" -F "function=a: one exponential" -F "logx=yes" -F "autox=yes" -F "autoy=yes"  http://192.92.147.107:8142/fit 
+	fi
 }
 
 
