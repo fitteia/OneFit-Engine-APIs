@@ -1,5 +1,22 @@
 # examples for functions to help repeating fit procedures
 
+ofe-list () { 
+	if [ -n "$1" ]; then
+      		curl http://192.92.147.107:8142/list/$1 
+	else
+      		curl http://192.92.147.107:8142/list 
+	if  
+}
+ofe-help () { 
+	if [ -n "$2" ]; then
+      		curl http://192.92.147.107:8142/help/$1/$2 
+	elif [ -n "$1" ]; then
+      		curl http://192.92.147.107:8142/help/$1 
+	else
+      		curl http://192.92.147.107:8142/help 
+	if  
+}
+
 fit () { 
 	if [ -n "$3" ]; then 
 		curl -F "file=@$1" -F "function=$2" -F "logx=no" -F "autox=no" -F "autoy=no"  -F "download=$3" http://192.92.147.107:8142/fit
