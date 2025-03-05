@@ -5,8 +5,9 @@ ofe-list () {
       		curl http://192.92.147.107:8142/list/$1 
 	else
       		curl http://192.92.147.107:8142/list 
-	if  
+	fi  
 }
+
 ofe-help () { 
 	if [ -n "$2" ]; then
       		curl http://192.92.147.107:8142/help/$1/$2 
@@ -14,7 +15,7 @@ ofe-help () {
       		curl http://192.92.147.107:8142/help/$1 
 	else
       		curl http://192.92.147.107:8142/help 
-	if  
+	fi  
 }
 
 fit () { 
