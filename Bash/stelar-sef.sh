@@ -3,21 +3,21 @@ profile="$1p.sef"											# Stelar sef profile file
 fitresults="fit-results.txt" 								# fit results file
 data="cT11T12.txt"											# data for gnuplot
 c=$2														# c=1, c:0.5
-
+Minf=$3														# Minf can be also something like "dum/1e7" 
 
 rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
 zip -q fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
 curl http://192.168.64.40:8142/fit/ofe 						\
-	-F "function=Mz[-2<2](									\
-		t[1e-5<20],											\
-   		M0[0<2],											\
-		Mi=0.4[0<2], 										\
-		$c[0.5<1], 											\
-		T11[1e-3<0.2], 										\
-		T12:0.5[1e-1<0.5])= 								\
-		(BR<4e6) ? BR/1e7 : 1.0\\+ 							\
-		((BR<4e6) ? (1-BR/1e7) : -(M0-1))*c*exp(-t/T11)\\+ 	\
-		((BR<4e6) ? (1-BR/1e7) : -(M0-1))*(1-c)*exp(-t/T12)"\
+	-F "function=Mz [-2 < 2] (								\
+		t [1e-5 < 20],										\
+   		M0 [0 < 2],											\
+		Mi=0.4 [0 < 2], 									\
+		$c [0.5 < 1], 										\
+		T11 [1e-3 < 0.2], 									\
+		T12:0.5 [1e-1 <0.5] )= 								\
+		(dum<4e6) ? $Minf : 1.0\\+ 							\
+		((dum<4e6) ? (1-$Minf) : -(M0-1))*c*exp(-t/T11)\\+ 	\
+		((dum<4e6) ? (1-$Minf) : -(M0-1))*(1-c)*exp(-t/T12)"\
 	-F "file=@fitzip.zip" 									\
 	-F "logx=yes" 											\
 	-F "stelar-sef-Mz=yes"									\
@@ -49,15 +49,7 @@ cat fit-results.txt 										\
 open All.pdf												# open All.pdf
 gnuplot -p -e "set term qt font 'Arial,12';					
 	set logscale xy; 					
-	plot '$data' using 1:2:3 with yerrorlines title 'c', 	
-		'$data' using 1:4:5 with yerrorlines title 'T1', 	
-		'$data' using 1:6:7 with yerrorlines title 'T12';"	# call gnuplot to plot values of c, T11, and T12
+	plot '$data' using 1:2:3 with yerrorlines pt 2 title 'c', 	
+		'$data' using 1:4:5 with yerrorlines pt 6 title 'R11', 	
+		'$data' using 1:6:7 with yerrorlines pt 8 title 'R12';"	# call gnuplot to plot values of c, T11, and T12
 
-
-#open ./
-#gnuplot -p -e 'set terminal pdfcairo; set output "lixo.pdf";
-#	set logscale xy; 
-#	plot "lixo.txt" using 1:2:3 with yerrorlines, 
-#		"lixo.txt" using 1:4:5 with yerrorlines, 
-#		"lixo.txt" using 1:6:7 with yerrorlines;'
-#open lixo.pdf
