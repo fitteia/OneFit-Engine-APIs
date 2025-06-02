@@ -20,10 +20,9 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 		((dum<4e6) ? (1-$Minf) : -(M0-1))*(1-c)*exp(-t/T12)"\
 	-F "file=@fitzip.zip" 									\
 	-F "logx=yes" 											\
-	-F "stelar-sef-Mz=yes"									\
 	-F "SymbSize=0.25" 		   								\
 	-F "download=zip" 		    							\
-	-F "stelar-sef-R1=$profile" 		    				\
+	-F "sef-R1-file=$profile" 		    				\
 	--silent 												\
 	--output OFE.zip 										# run curl and access the remote OneFit-Engine to perform the fit
 
