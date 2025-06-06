@@ -2,21 +2,26 @@ magnetization="$1m.sef" 									# Stelar sef magnetization file
 profile="$1p.sef"											# Stelar sef profile file
 c=$2														# c=1, c:0.5
 Minf=$3														# Minf can be also something like "dum/1e7" 
+
+IP=127.0.0.1												# ofe server IP
+
 fitresults="fit-results.txt" 								# fit results file
 data="cT11T12.txt"											# data for gnuplot
+folder=OFE
+
 zip="zip -jq"
-unzip="unzip -joq OFE.zip -d OFE"
+unzip="unzip -joq $folder.zip -d $folder"
 open=open
-jq=jq
+
 # MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
 #zip="7z a"
 #unzip="7z e OFE.zip -oOFE"
 #open=explorer
 
-rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
+rm -fr fitzip.zip folder.zip $folder/ 								# rm previous temporary zip files and folder
 $zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
 
-curl http://192.168.64.40:8142/fit/ofe 						\
+curl http://$IP:8142/fit/ofe 						\
 	-F "function=Mz [-2 < 2] (								\
 		t [1e-5 < 20],										\
    		M0 [0 < 2],											\
@@ -33,10 +38,10 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 	-F "download=zip" 		    							\
 	-F "sef-R1-file=$profile" 			    				\
 	--silent 												\
-	--output OFE.zip 										# run curl and access the remote OneFit-Engine to perform the fit
+	--output $folder.zip 										# run curl and access the remote OneFit-Engine to perform the fit
 
 $unzip 														# unzip OFE zip file with file paths removed (-j) to folder OFE 
-cd OFE														# go to folder OFE
+cd $folder														# go to folder OFE
 jq '."fit-results"' fitzip.json 							\
 	| sed -e 's/\\n/\n/g' -e 's/"//g' 						\
 	| tee $fitresults										# read fit-results fiedl from the jason file, insert newlines and remove '"' 
