@@ -34,19 +34,17 @@ jq '."fit-results"' fitzip.json 							\
 
 cat fit-results.txt 										\
 	| awk -F ', '  											\
-		-v p=$1 											\
-		-v n=28 											\
 		'/^p/ {print 	$4, 								\
 						$9,							 		\
-						$10*sqrt($3/n),						\
+						$10*sqrt($3),						\
 						1/$11, 								\
-						$12*sqrt($3/n)/($11*$11), 			\
+						$12*sqrt($3)/($11*$11), 			\
 						1/$13, 								\
-						$14*sqrt($3/n)/($13*$13)}			\
+						$14*sqrt($3)/($13*$13)}			\
 		' 	> $data											# create data file for gnuplot with frequency, c, err_c, T11, err_t11, T12, and err_T12 
 
 open All.pdf												# open All.pdf
-# When nin MS Windows use explore All.pdf
+# When in MS Windows use explore All.pdf
 
 #when in MS WIndows use gnuplot.exe
 gnuplot -p -e "set term qt font 'Arial,12';					
