@@ -1,12 +1,21 @@
 magnetization="$1m.sef" 									# Stelar sef magnetization file
 profile="$1p.sef"											# Stelar sef profile file
-fitresults="fit-results.txt" 								# fit results file
-data="cT11T12.txt"											# data for gnuplot
 c=$2														# c=1, c:0.5
 Minf=$3														# Minf can be also something like "dum/1e7" 
+fitresults="fit-results.txt" 								# fit results file
+data="cT11T12.txt"											# data for gnuplot
+zip="zip -jq"
+unzip="unzip -joq"
+open=open
+jq=jq
+# MS Windows: zip="7z a"
+# MS windows: unzip="7z e"
+# MS Windows: open=explorer
+# MS Windows: jq=jq-wind64.exe
 
 rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
-zip -jq fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
+$zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
+
 curl http://192.168.64.40:8142/fit/ofe 						\
 	-F "function=Mz [-2 < 2] (								\
 		t [1e-5 < 20],										\
@@ -14,7 +23,7 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 		Mi=0.4 [0 < 2], 									\
 		$c [0.5 < 1], 										\
 		T11 [1e-3 < 0.2], 									\
-		T12:0.5 [1e-1 <0.5] )= 								\
+		T12:0.5 [1e-1 < 3] )= 								\
 		(dum<4e6) ? $Minf : 1.0\\+ 							\
 		((dum<4e6) ? (1-$Minf) : -(M0-1))*c*exp(-t/T11)\\+ 	\
 		((dum<4e6) ? (1-$Minf) : -(M0-1))*(1-c)*exp(-t/T12)"\
@@ -26,9 +35,9 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 	--silent 												\
 	--output OFE.zip 										# run curl and access the remote OneFit-Engine to perform the fit
 
-unzip -joq OFE.zip -d OFE									# unzip OFE zip file with file paths removed (-j) to folder OFE 
+$unzip OFE.zip -d OFE									# unzip OFE zip file with file paths removed (-j) to folder OFE 
 cd OFE														# go to folder OFE
-jq '."fit-results"' fitzip.json 							\
+$jq '."fit-results"' fitzip.json 							\
 	| sed -e 's/\\n/\n/g' -e 's/"//g' 						\
 	| tee $fitresults										# read fit-results fiedl from the jason file, insert newlines and remove '"' 
 
@@ -43,10 +52,7 @@ cat fit-results.txt 										\
 						$14*sqrt($3)/($13*$13)}			\
 		' 	> $data											# create data file for gnuplot with frequency, c, err_c, T11, err_t11, T12, and err_T12 
 
-open All.pdf												# open All.pdf
-# When in MS Windows use explore All.pdf
-
-#when in MS WIndows use gnuplot.exe
+$open All.pdf												# open All.pdf
 gnuplot -p -e "set term qt font 'Arial,12';					
 	set logscale xy; 					
 	plot '$data' using 1:2:3 with yerrorlines pt 2 title 'c', 	
