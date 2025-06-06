@@ -8,11 +8,10 @@ zip="zip -jq"
 unzip="unzip -joq OFE.zip -d OFE"
 open=open
 jq=jq
-# MS Windows:
+# MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
 #zip="7z a"
 #unzip="7z e OFE.zip -oOFE"
 #open=explorer
-#jq=jq-wind64.exe
 
 rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
 $zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
@@ -38,7 +37,7 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 
 $unzip 														# unzip OFE zip file with file paths removed (-j) to folder OFE 
 cd OFE														# go to folder OFE
-$jq '."fit-results"' fitzip.json 							\
+jq '."fit-results"' fitzip.json 							\
 	| sed -e 's/\\n/\n/g' -e 's/"//g' 						\
 	| tee $fitresults										# read fit-results fiedl from the jason file, insert newlines and remove '"' 
 
