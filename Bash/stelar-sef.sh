@@ -8,10 +8,11 @@ zip="zip -jq"
 unzip="unzip -joq"
 open=open
 jq=jq
-# MS Windows: zip="7z a"
-# MS windows: unzip="7z e"
-# MS Windows: open=explorer
-# MS Windows: jq=jq-wind64.exe
+# MS Windows:
+#zip="7z a"
+#unzip="7z e"
+#open=explorer
+#jq=jq-wind64.exe
 
 rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
 $zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
