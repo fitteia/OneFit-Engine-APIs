@@ -1,5 +1,4 @@
-magnetization="$1m.sef" 									# Stelar sef magnetization file
-profile="$1p.sef"											# Stelar sef profile file
+magnetization="$1" 									# Stelar sef magnetization file
 c=$2														# c=1, c:0.5
 Minf=$3														# Minf can be also something like "dum/1e7" 
 
@@ -27,8 +26,8 @@ curl http://$IP:8142/fit/ofe 						\
    		M0 [0 < 2],											\
 		Mi=0.4 [0 < 2], 									\
 		$c [0.5 < 1], 										\
-		T11 [1e-3 < 1], 									\
-		T12:0.5 [1e-2 < 3] )= 								\
+		T11 [1e-3 < 0.5], 									\
+		T12:0.5 [1e-1 < 3] )= 								\
 		(dum<4e6) ? $Minf : 1.0\\+ 							\
 		((dum<4e6) ? (1-$Minf) : -(M0-1))*c*exp(-t/T11)\\+ 	\
 		((dum<4e6) ? (1-$Minf) : -(M0-1))*(1-c)*exp(-t/T12)"\
@@ -36,7 +35,6 @@ curl http://$IP:8142/fit/ofe 						\
 	-F "logx=yes" 											\
 	-F "SymbSize=0.25" 		   								\
 	-F "download=zip" 		    							\
-	-F "sef-R1-file=$profile" 			    				\
 	--silent 												\
 	--output $folder.zip 										# run curl and access the remote OneFit-Engine to perform the fit
 
