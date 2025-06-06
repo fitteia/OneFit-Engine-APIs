@@ -6,7 +6,7 @@ c=$2														# c=1, c:0.5
 Minf=$3														# Minf can be also something like "dum/1e7" 
 
 rm -fr fitzip.zip OFE.zip OFE/ 								# rm previous temporary zip files and folder
-zip -q fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
+zip -jq fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
 curl http://192.168.64.40:8142/fit/ofe 						\
 	-F "function=Mz [-2 < 2] (								\
 		t [1e-5 < 20],										\
@@ -46,6 +46,9 @@ cat fit-results.txt 										\
 		' 	> $data											# create data file for gnuplot with frequency, c, err_c, T11, err_t11, T12, and err_T12 
 
 open All.pdf												# open All.pdf
+# When nin MS Windows use explore All.pdf
+
+#when in MS WIndows use gnuplot.exe
 gnuplot -p -e "set term qt font 'Arial,12';					
 	set logscale xy; 					
 	plot '$data' using 1:2:3 with yerrorlines pt 2 title 'c', 	
