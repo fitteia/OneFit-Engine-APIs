@@ -5,12 +5,12 @@ Minf=$3														# Minf can be also something like "dum/1e7"
 fitresults="fit-results.txt" 								# fit results file
 data="cT11T12.txt"											# data for gnuplot
 zip="zip -jq"
-unzip="unzip -joq"
+unzip="unzip -joq OFE.zip -d"
 open=open
 jq=jq
 # MS Windows:
 #zip="7z a"
-#unzip="7z e"
+#unzip="7z e OFE.zip -o"
 #open=explorer
 #jq=jq-wind64.exe
 
@@ -36,7 +36,7 @@ curl http://192.168.64.40:8142/fit/ofe 						\
 	--silent 												\
 	--output OFE.zip 										# run curl and access the remote OneFit-Engine to perform the fit
 
-$unzip OFE.zip -d OFE									# unzip OFE zip file with file paths removed (-j) to folder OFE 
+$unzip OFE									# unzip OFE zip file with file paths removed (-j) to folder OFE 
 cd OFE														# go to folder OFE
 $jq '."fit-results"' fitzip.json 							\
 	| sed -e 's/\\n/\n/g' -e 's/"//g' 						\
