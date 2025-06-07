@@ -16,7 +16,7 @@ folder=OFE
 
 # MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
 zip="7z a"
-unzip="7z e OFE.zip -oOFE"
+unzip="7z e $folder.zip -o$folder"
 open=explorer
 
 rm -fr fitzip.zip folder.zip $folder/ 								# rm previous temporary zip files and folder

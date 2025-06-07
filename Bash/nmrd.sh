@@ -1,6 +1,22 @@
-rm -fr fitzip.zip OFE.zip OFE/ 
-zip -q fitzip.zip $* 
-curl http://192.168.64.40:8142/fit  		\
+IP=192.92.147.107												# ofe server IP
+
+folder=OFE
+
+# Linux MacOS
+#zip="zip -jq"
+#unzip="unzip -joq $folder.zip -d $folder"
+#open=open
+
+# MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
+zip="7z a"
+unzip="7z e $folder.zip -o$folder"
+open=explorer
+
+
+
+rm -fr fitzip.zip $folder.zip $folder/ 
+$zip fitzip.zip $* 
+curl http://$IP:8142/fit  		\
 	-F "function=R1 [0.1 < 1000] (			\
 		f [5e3 < 1e8],							\
 		B=5.94e9 [1e7 < 6e9],					\
@@ -31,10 +47,10 @@ curl http://192.168.64.40:8142/fit  		\
 	-F "Num=200"							\
 	-F "SymbSize=0.35"						\
 	--silent 								\
-	--output OFE.zip
+	--output $folder.zip
 
-unzip -joq OFE.zip -d OFE
+$unzip 
 cd OFE
 jq '."fit-results"' fitzip.json | sed -e 's/\\n/\n/g' | sed -e 's/"//g'
-open ./
-open All.pdf
+$open ./
+$open All.pdf
