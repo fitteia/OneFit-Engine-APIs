@@ -50,7 +50,7 @@ curl http://$IP:8142/fit  		\
 	--output $folder.zip
 
 $unzip 
-cd OFE
+cd $folder
 jq '."fit-results"' fitzip.json | sed -e 's/\\n/\n/g' | sed -e 's/"//g'
 $open ./
 $open All.pdf
