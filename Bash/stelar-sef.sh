@@ -3,20 +3,21 @@ profile="$1p.sef"											# Stelar sef profile file
 c=$2														# c=1, c:0.5
 Minf=$3														# Minf can be also something like "dum/1e7" 
 
-IP=127.0.0.1												# ofe server IP
+IP=192.92.147.107												# ofe server IP
 
 fitresults="fit-results.txt" 								# fit results file
 data="cT11T12.txt"											# data for gnuplot
 folder=OFE
 
-zip="zip -jq"
-unzip="unzip -joq $folder.zip -d $folder"
-open=open
+# Linux MacOS
+#zip="zip -jq"
+#unzip="unzip -joq $folder.zip -d $folder"
+#open=open
 
 # MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
-#zip="7z a"
-#unzip="7z e OFE.zip -oOFE"
-#open=explorer
+zip="7z a"
+unzip="7z e OFE.zip -oOFE"
+open=explorer
 
 rm -fr fitzip.zip folder.zip $folder/ 								# rm previous temporary zip files and folder
 $zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
