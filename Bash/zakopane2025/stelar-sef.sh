@@ -38,7 +38,7 @@ function="
 		"
 	
 
-cmd=(curl http://$IP:8142/fit/ofe
+cmd=(curl http://$IP:8142/fit/$username
 	-F \"function="$function"\"
 	-F \"file=@fitzip.zip\"
 	-F \"logx=yes\"
