@@ -6,7 +6,7 @@ profile="$2p.sef"											# Stelar sef profile file
 c=$3														# c=1, c:0.5
 Minf=$4														# Minf can be also something like "dum/1e7" 
 
-IP=192.168.64.40												# ofe server IP
+IP=192.92.147.107												# ofe server IP
 
 fitresults="fit-results.txt" 								# fit results file
 data="cT11T12.txt"											# data for gnuplot
