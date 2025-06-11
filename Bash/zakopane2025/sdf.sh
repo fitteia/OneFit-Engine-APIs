@@ -1,6 +1,7 @@
-magnetization="$1" 									# Stelar sef magnetization file
-c=$2														# c=1, c:0.5
-Minf=$3														# Minf can be also something like "dum/1e7" 
+username=$1
+magnetization="$2" 									# Stelar sef magnetization file
+c=$3														# c=1, c:0.5
+Minf=$4														# Minf can be also something like "dum/1e7" 
 
 IP=192.92.147.107												# ofe server IP
 
@@ -21,7 +22,7 @@ open=explorer
 rm -fr fitzip.zip folder.zip $folder/ 								# rm previous temporary zip files and folder
 $zip fitzip.zip $magnetization $profile 					# creates z zip file with the magnetization and profiles sef files
 
-curl http://$IP:8142/fit/ofe 						\
+curl http://$IP:8142/fit/$username 						\
 	-F "function=Mz [-2 < 2] (								\
 		t [1e-5 < 20],										\
    		M0 [0 < 2],											\
