@@ -18,7 +18,7 @@ open=explorer
 
 rm -fr fitzip.zip $folder.zip $folder/ 
 $zip fitzip.zip $* 
-curl http://$IP:8142/fit  		\
+curl http://$IP:8142/fit/$username  		\
 	-F "function=R1 [0.1 < 1000] (			\
 		f [5e3 < 1e8],							\
 		B=5.94e9 [1e7 < 6e9],					\
