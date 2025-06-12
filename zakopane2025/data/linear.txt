@@ -1,0 +1,14 @@
+# Comment lines start with "#" 
+# 
+# Check Help/FAQ to know how to use 
+# special comment lines to do conditional fits/plots 
+# 
+# Check Help/FAQ to learn how to consider 
+# experimental errors in both x and y 
+# 
+# Fit/Plot commands require data to be formated in 
+# three columns: x y ey 
+         0.5            1          0.1
+         1.1          2.1          0.1
+         2.1          2.9          0.1
+        3.05          3.1          0.1
