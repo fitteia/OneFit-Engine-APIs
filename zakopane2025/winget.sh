@@ -24,3 +24,9 @@ bash ../nmrd.sh gul p96p.sef
 bash ../sdf.sh gul c12_60.sdf c:0.6 dum/1e7
 
 bash ../stelar-sef.sh gul p96 c:0.6 dum/1e7
+
+curl http://192.92.147.107:8142/fit -F "file=@linear.txt" -F "function=y[-3<3](x[-10<10],a,b,c)=a\+b*x\+c*x*x" -F "download=All.pdf" --silent --output All.pdf && explorer All.pdf
+
+fit() { curl http://192.168.64.40:8142/fit -F "file=@$1" -F "function=$2" -F "download=All.pdf" --silent --output All.pdf && explorer All.pdf; }
+
+fit linear.txt "y[-3<3](x[-10<10],a,b,c)=a\+b*x\+c*x*x"
