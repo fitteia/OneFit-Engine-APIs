@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+fit() { onefite fit "Mz[-1.5<1.5](t[1e-3<50],M0[0<2],Mi[0<2],T1[1e-3<5])=Mi\+(M0-Mi)*exp(-t/T1)" $* --logx --fit-if='c2>-10,1' --plot-if='c2>-10,1' 2>/dev/null | tee fit-results.txt; }
+
+GNUPLOT() { gnuplot -p -e "set term qt font 'Arial,12'; set logscale xy; set xtics 10; set ytics 10; set xrange [1e3:1e9]; set yrange [0.1:10]; plot '-' using 1:2 with points pt 2 title 'T1'"; }
+
+AWK() { awk -v x="$1" -v y="$2" -F', ' '!/#/ && NF>0  {print $x, 1/$y}'; }
+
+
+AVERAGE() { raku -e 'my %a=[]; $*IN.lines.map({ %a{.words.head}.push: .words.tail }); %a=%a.map({ .key=> .value.sum/.value.elems}); say %a.sort({.key.Num}).join("\n")'; }
+
+plot() { AWK  $1 $2 | GNUPLOT; }
+
+rfit() { 
+# Check usage
+	if [[ $# -lt 2 ]]; then
+    	echo "Usage: $0 <action> <function> [args...]"
+    	exit 1
+	fi
+	
+	IP="127.0.0.1"
+	WORKFOLDER="ofe-tmp"
+
+	fitresults="fit-results.txt" 								# fit results file
+	data="cT11T12.txt"											# data for gnuplot
+	folder=ofe-tmp
+
+# Extract base info
+	ACTION="fit"
+#	shift
+	FUNCTION=$1
+	shift
+	BASE_URL="http://$IP:8142/fit/$WORKFOLDER"
+	ARCHIVE="upload.zip"
+
+# Linux and MacOS
+	ZIP='zip -jq'
+	UNZIP="unzip -joq $folder.zip -d $folder"
+	OPEN="open"
+
+# MS Windows winget install -e --id 7zip.7zip; winget install jqlang.jq:
+#	ZIP="7z a -tzip"
+#	UNZIP="7z e $folder.zip -o$folder"
+#	OPEN="explorer"
+
+# Start command as array
+	CMD=(curl "$BASE_URL" -F "\"function=$FUNCTION\"")
+
+# Separate flags and files
+	FILES_TO_ARCHIVE=()
+
+	for arg in "$@"; do
+    	if [[ "$arg" == --* ]]; then
+        	FLAG="${arg#--}"
+        	CMD+=(-F "\"$FLAG=yes\"")
+    	else
+        	FILES_TO_ARCHIVE+=("$arg")
+    	fi
+	done
+
+# Create archive if files exist
+	if [[ ${#FILES_TO_ARCHIVE[@]} -gt 0 ]]; then
+    	echo "Archiving: ${FILES_TO_ARCHIVE[*]}" >&2
+    	eval "$ZIP $ARCHIVE ${FILES_TO_ARCHIVE[@]} >/dev/null"
+
+    	if [[ -f "$ARCHIVE" ]]; then
+        	CMD+=(-F "\"file=@$ARCHIVE\"")
+    	else
+        	echo "Failed to create archive."
+    	fi
+	fi
+
+	CMD+=(-F "\"download=zip\"")
+	CMD+=(--silent)
+	CMD+=(--output ofe-tmp.zip)
+
+# Run the command
+	echo "Running: ${CMD[*]}" >&2
+#"${CMD[@]}"
+	eval "rm -fr $folder"
+	eval "${CMD[*]}"
+
+	eval "$UNZIP" 											# unzip OFE zip file with file paths removed (-j) to folder OFE 
+	jq '."fit-results"' "$folder/upload.json" 							\
+		| sed -e 's/\\n/\n/g' -e "s/\"//g" 						\
+		| tee $fitresults										# read fit-results fiedl from the jason file, insert newlines and remove '"' 
+}
+
