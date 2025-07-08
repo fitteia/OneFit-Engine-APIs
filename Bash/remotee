@@ -61,6 +61,7 @@ rfit() {
 # Create archive if files exist
 	if [[ ${#FILES_TO_ARCHIVE[@]} -gt 0 ]]; then
     	echo "Archiving: ${FILES_TO_ARCHIVE[*]}" >&2
+		eval "rm $ARCHIVE"
     	eval "$ZIP $ARCHIVE ${FILES_TO_ARCHIVE[@]} >/dev/null"
 
     	if [[ -f "$ARCHIVE" ]]; then
