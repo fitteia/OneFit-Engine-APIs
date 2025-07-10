@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-fit() { onefite fit "Mz[-1.5<1.5](t[1e-3<50],M0[0<2],Mi[0<2],T1[1e-3<5])=Mi\+(M0-Mi)*exp(-t/T1)" $* --logx --fit-if='c2>-10,1' --plot-if='c2>-10,1' 2>/dev/null | tee fit-results.txt; }
+fit() { onefite fit $*  2>/dev/null | tee fit-results.txt; }
 
 GNUPLOT() { gnuplot -p -e "set term qt font 'Arial,12'; set logscale xy; set xtics 10; set ytics 10; set xrange [1e3:1e9]; set yrange [0.1:10]; plot '-' using 1:2 with points pt 2 title 'T1'"; }
 
