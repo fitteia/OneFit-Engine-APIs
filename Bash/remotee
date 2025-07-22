@@ -1,37 +1,37 @@
 #!/usr/bin/env bash
 
-fit() { onefite fit $*  2>/dev/null | tee fit-results.txt; }
+fit() { onefite fit $* 2>onefite.log | tee fit-results.txt; }
 
 GNUPLOT() { gnuplot -p -e "set term qt font 'Arial,12'; set logscale xy; set xtics 10; set ytics 10; set xrange [1e3:1e9]; set yrange [0.1:10]; plot '-' using 1:2 with points pt 2 title 'T1'"; }
 
 AWK() { awk -v x="$1" -v y="$2" -F', ' '!/#/ && NF>0  {print $x, 1/$y}'; }
 
 
-AVERAGE() { raku -e 'my %a=[]; $*IN.lines.map({ %a{.words.head}.push: .words.tail }); %a=%a.map({ .key=> .value.sum/.value.elems}); say %a.sort({.key.Num}).join("\n")'; }
+AVERAGE() { raku -e 'my %a=(); $*IN.lines.grep(/\w/).map({ %a{.words.head}.push: .words.skip(1) }); %a.map({ .key => gather for 0 ..^ .value[0].elems -> $i { take .value.map(*[$i]).sum/.value.elems }}).sort({ .key.Num }).join(":").Str.subst(/\s+/," ",:g).subst(":","\n",:g).say'; }
 
 plot() { AWK  $1 $2 | GNUPLOT; }
 
 rfit() { 
 # Check usage
-	if [[ $# -lt 2 ]]; then
-    	echo "Usage: $0 <action> <function> [args...]"
+	if [[ $# -lt 1 ]]; then
+    	echo "Usage: $0 fit [function] [args...]"
     	exit 1
 	fi
 	
 	IP="127.0.0.1"
-	WORKFOLDER="ofe-tmp"
+	WORKFOLDER=""
 
 	fitresults="fit-results.txt" 								# fit results file
 	data="cT11T12.txt"											# data for gnuplot
 	folder=ofe-tmp
-
+	basename=upload
 # Extract base info
 	ACTION="fit"
 #	shift
-	FUNCTION=$1
-	shift
-	BASE_URL="http://$IP:8142/fit/$WORKFOLDER"
-	ARCHIVE="upload.zip"
+#	FUNCTION=$1
+#	shift
+	BASE_URL="http://$IP:8142/fit"
+	ARCHIVE="$basename.zip"
 
 # Linux and MacOS
 	ZIP='zip -jq'
@@ -44,32 +44,43 @@ rfit() {
 #	OPEN="explorer"
 
 # Start command as array
-	CMD=(curl "$BASE_URL" -F "\"function=$FUNCTION\"")
+	CMD=(curl "$BASE_URL")
 
 # Separate flags and files
 	FILES_TO_ARCHIVE=()
+	NOARCHIVE=0
 
 	for arg in "$@"; do
     	if [[ "$arg" == --* ]]; then
         	FLAG="${arg#--}"
         	CMD+=(-F "\"$FLAG=yes\"")
-    	else
+    	elif [[ "$arg" == a:* ]] || [[ "$arg" == *=* ]]; then
+			CMD+=(-F "\"function=$arg\"")
+		elif [[ "$arg" == *.sav ]] || [[ "$arg" == *.json ]]; then
+			NOARCHIVE=1
+			FILE="$arg"
+			basename="${arg%.*}"
+		else
         	FILES_TO_ARCHIVE+=("$arg")
     	fi
 	done
 
 # Create archive if files exist
-	if [[ ${#FILES_TO_ARCHIVE[@]} -gt 0 ]]; then
-    	echo "Archiving: ${FILES_TO_ARCHIVE[*]}" >&2
-		eval "rm $ARCHIVE"
-    	eval "$ZIP $ARCHIVE ${FILES_TO_ARCHIVE[@]} >/dev/null"
+	if [[ "$NOARCHIVE" == 1 ]]; then 
+       	CMD+=(-F "\"file=@$FILE\"")
+	else
+		if [[ ${#FILES_TO_ARCHIVE[@]} -gt 0 ]]; then
+    		echo "Archiving: ${FILES_TO_ARCHIVE[*]}" >&2
+			eval "rm $ARCHIVE"
+    		eval "$ZIP $ARCHIVE ${FILES_TO_ARCHIVE[@]} >/dev/null"
 
-    	if [[ -f "$ARCHIVE" ]]; then
-        	CMD+=(-F "\"file=@$ARCHIVE\"")
-    	else
-        	echo "Failed to create archive."
-    	fi
-	fi
+    		if [[ -f "$ARCHIVE" ]]; then
+        		CMD+=(-F "\"file=@$ARCHIVE\"")
+    		else
+        		echo "Failed to create archive."
+    		fi
+		fi
+	fi	
 
 	CMD+=(-F "\"download=zip\"")
 	CMD+=(--silent)
@@ -82,7 +93,7 @@ rfit() {
 	eval "${CMD[*]}"
 
 	eval "$UNZIP" 											# unzip OFE zip file with file paths removed (-j) to folder OFE 
-	jq '."fit-results"' "$folder/upload.json" 							\
+	jq '."fit-results"' "$folder/$basename.json" 							\
 		| sed -e 's/\\n/\n/g' -e "s/\"//g" 						\
 		| tee $fitresults										# read fit-results fiedl from the jason file, insert newlines and remove '"' 
 }
