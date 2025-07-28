@@ -1,0 +1,52 @@
+#!/usr/bin/env raku
+
+my %*SUB-MAIN-OPTS =  :named-anywhere, :allow-no, :bundling ;
+
+
+multi MAIN(
+	Str :$T1="0.01:1", # default: 0.1:1
+   	Str :t(:$tf)="0.01:10",
+	Str :f(:$freqs)="5:8000",
+	Int :nt(:$ntaus)=16,
+	Int :nf(:$nfreqs)=16,
+	Int :D1(:$d1)=1,
+	Int :$ns=8,
+	Str :T(:$temp)="21",
+	Str :$modes="1:4000:7",
+	Bool :h(:$help)=False,
+	Int :$offset=2500,
+){
+	if $help {
+		say qq:to/END_HELP/;
+Usage:
+  ./ffclist [--T1=<Str>] [-t|--tf=<Str>] [-f|--freqs=<Str>] [--nt|--ntaus[=Int]] [--nf|--nfreqs[=Int]] [--d1[=Int]] [--ns[=Int]] [-T|--temp=<Str>] [--modes=<Str>] [-h|--help] [--offset[=Int]]		MAIN( :q );
+
+  DEFAULTS:
+
+	tau_min:tau_max = $tf (s)
+	freq range = $freqs (kHz)
+	n taus = $ntaus
+	n freqs = $nfreqs
+	D1 = $d1 (s)
+	T1 range = $T1 (s)
+	Temp = $temp (C)
+	modes = $modes (mode 1, freq, mode 7)
+END_HELP	
+		exit(0);		
+	}	
+	my @freqs = (0 ..^ $nfreqs).map({ round($freqs.split(':').head*($freqs.split(':').tail/$freqs.split(':').head)**($_/($nfreqs-1))).Int });
+	my @taus = ();
+	my @d1=();
+	for (0 ..^ $nfreqs) -> $k {
+		my $tlst=0.01;
+		my $d1lst=10;
+		my $t1 = $T1.split(':').head*($T1.split(':').tail/$T1.split(':').head)**($k/($nfreqs-1)); 
+		my $tm = $tf.split(':').head * $t1;
+		my $tM = $tf.split(':').tail * $t1;
+
+		$tlst = (0 ..^ $ntaus).map({ round($tm*($tM/$tm)**($_/($ntaus-1))*1e6).Int + $offset }).join(',');
+		$D1 = $d1*1000;
+		say $k+1,",$temp,@freqs[$k],$D1,{ (@freqs[$k] < $modes.split(':')[1]) ?? $modes.split(':').head !! $modes.split(':').tail },$ns,$ntaus,$tlst";
+	}
+}	
+
