@@ -9,7 +9,7 @@ AWK() { awk -v x="$1" -v y="$2" -F', ' '!/#/ && NF>0  {print $x, 1/$y}'; }
 
 AVERAGE() { raku -e 'my %a=(); $*IN.lines.grep(/\w/).map({ %a{.words.head}.push: .words.skip(1) }); %a.map({ .key => gather for 0 ..^ .value[0].elems -> $i { take .value.map(*[$i]).sum/.value.elems }}).sort({ .key.Num }).join(":").Str.subst(/\s+/," ",:g).subst(":","\n",:g).say'; }
 
-JQ() { ".\"$1\"" $2 | sed -e 's/\\n/\n/g' -e "s/\"//g" | tee $3 }
+JQ() { jq ".\"$1\"" $2 | sed -e 's/\\n/\n/g' -e "s/\"//g" | tee $3 }
 
 plot() { AWK  $1 $2 | GNUPLOT; }
 
