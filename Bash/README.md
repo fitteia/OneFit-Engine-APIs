@@ -16,3 +16,4 @@ remote-prompt fit <file-prefix>
 To fit a data file with an exponential
 host-prompt> fit-exp-logx <datafile>  
 
+prompt> pdf2mp4 All.pdf to create a mp4 video with all plots
