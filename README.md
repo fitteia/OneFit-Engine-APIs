@@ -8,3 +8,5 @@ Additional APIs:
 - https://github.com/muhammadmuntazirmehd/PyOFE-API
 - https://github.com/mboliveira2003/nextjs_fitteia2.0
 
+- https://firelax.cerm.unifi.it
+
